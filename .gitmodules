@@ -1,0 +1,6 @@
+[submodule "libft"]
+	path = libft
+	url = https://github.com/Neko-Sato/42cursus-libft.git
+[submodule "libftprintf"]
+	path = libftprintf
+	url = https://github.com/Neko-Sato/42cursus-ft_printf.git
