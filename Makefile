@@ -6,11 +6,11 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/08/20 00:55:39 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/08/20 00:56:30 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME			= push_swap
+NAME			= pipex
 
 DIR				= .
 FT				= $(DIR)/libft
