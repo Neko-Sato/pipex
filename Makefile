@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/08/20 00:56:30 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/09/12 22:05:04 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,13 +15,17 @@ NAME			= pipex
 DIR				= .
 FT				= $(DIR)/libft
 FT_PRINTF		= $(DIR)/libftprintf
-INCS_DIR		= $(DIR)/includes
+INCS_DIR		= $(DIR)/incs
 OBJS_DIR		= $(DIR)/objs
 
 MAIN			= $(DIR)/main.c
 
 SRCS			= \
 	$(addprefix $(DIR)/srcs/, \
+		io.c \
+		utils.c \
+		cmdline_split.c \
+		pipex.c \
 	) \
 
 OBJS			= $(addprefix $(OBJS_DIR)/, $(SRCS:.c=.o))
@@ -70,8 +74,10 @@ norm: $(MAIN) $(SRCS) $(INCS_DIR)
 
 .PHONY: $(FT)
 $(FT):
+	#@git submodule update --init $@
 	@make -C $@ all
 
 .PHONY: $(FT_PRINTF)
 $(FT_PRINTF):
+	#@git submodule update --init $@
 	@make -C $@
