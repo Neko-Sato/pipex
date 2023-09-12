@@ -6,14 +6,14 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 20:45:43 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/10 14:54:20 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/12 22:20:33 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
 #include <unistd.h>
 
-void setstdio(int input, int output)
+void	setstdio(int input, int output)
 {
 	if (STDIN_FILENO != input)
 	{
@@ -29,7 +29,7 @@ void setstdio(int input, int output)
 	}
 }
 
-void initstdio(void)
+void	initstdio(void)
 {
 	int	input;
 	int	output;
