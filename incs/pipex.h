@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 20:46:56 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/09 21:52:31 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/16 00:40:04 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,14 @@ typedef struct s_pipex
 	char	*file2;
 }			t_pipex;
 
-int	pipex(t_pipex *vars, char *executor, char *envp[]);
+typedef struct s_eval
+{
+	char	**envp;
+	char	**path;
+	int		stdin;
+	int		stdout;
+}			t_eval;
+
+// int			pipex(t_pipex *vars, char *executor, char *envp[]);
 
 #endif

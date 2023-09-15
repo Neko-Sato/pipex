@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/09/12 22:07:38 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/09/16 00:49:51 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,6 @@ MAIN			= $(DIR)/main.c
 
 SRCS			= \
 	$(addprefix $(DIR)/srcs/, \
-		io.c \
 		utils.c \
 		cmdline_split.c \
 		pipex.c \

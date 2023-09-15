@@ -1,56 +1,76 @@
 #include "pipex.h"
 #include "utils.h"
-#include "io.h"
+#include <fcntl.h>
 #include <libft.h>
 #include <stdio.h>
-#include <fcntl.h>
-
-#include <stdlib.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
-char	**cmdline_split(char *s);
+static int	executable(char *cmd, char *path[], char **cmd_path)
+{
+	int		i;
+	char	*temp;
+
+	if (!access(*cmd, X_OK))
+		temp = ft_strdup(cmd);
+	else
+	{
+		i = 0;
+		while (path && path[i])
+		{
+			temp = ft_joinpath(path[i++], cmd);
+			if (!temp)
+				return (-1);
+			if (!access(temp, X_OK))
+				break ;
+			free(temp);
+		}
+		if (!path)
+			return (1);
+	}
+	if (cmd_path)
+		*cmd_path = temp;
+	return (0);
+}
+
+
+//	致命的エラーの場合エラー出力をして終了する関数
+pid_t	eval(char *cmd, t_eval *config)
+{
+	pid_t	ret;
+	size_t	i;
+	char	*path;
+	char	**args;
+
+	args = cmdline_split(cmd);
+	if (!args)
+		return (-1);
+	path = executable(args[0], config->path);
+	if (!path)
+		ret = -1;
+	else
+		ret = execute(path, args, config->envp);
+	i = 0;
+	while (args[i])
+		free(args[i++]);
+	free(args);
+	free(path);
+	return (ret);
+}
 
 int	main(int argc, char *argv[], char *envp[])
 {
+	pid_t	pid;
+	t_eval	config;
+
 	(void)argc;
 	(void)argv;
 	(void)envp;
-
-	char **a = cmdline_split("cmd aa aa\"aa aa\"aa");
-	while (*a)
-		printf("%s\n", *a++);
-	
-	// t_strgen *strgen= ft_strgennew();
-	// ft_strgenstr(strgen, "aaa");
-	// ft_strgenchr(strgen, 'f');
-	// ft_strgenstr(strgen, "ddd");
-	// printf("%s\n", ft_strgencomp(strgen));
-	// ft_strgendel(strgen);
-	// pipex(&(t_pipex){(char *[]){"grep ppp", "cat -e", NULL}, 1, "file1", "file2"}, argv[0], envp);
-	// int fd[2];
-
-	// int fd2[2];
-	// pipe(fd);
-	// pipe(fd2);
-	// write(fd[1], "abcde\n", 6);
-	// write(fd[1], "abcde\n", 6);
-	// write(fd[1], "abcde\n", 6);
-	// write(fd[1], "abcde\n", 6);
-	// close(fd[1]);
-	// setstdio(fd[0], fd2[1]);
-	// pid_t pid = fork();
-	// setstdio(fd2[0], open("/dev/stdout", O_WRONLY));
-	// if (!pid)
-	// {
-	// 	execve("/bin/cat", (char *[]){argv[0], NULL}, envp);
-	// }	
-	// execve("/bin/cat", (char *[]){argv[0], "-e", NULL}, envp);
-	// close(fd2[1]);
-	// wait(NULL);
+	config.envp = envp;
+	config.path = get_path(envp);
+	config.stdin = 0;
+	config.stdout = 1;
+	pid = eval("ls ~", &config);
+	waitpid(pid, NULL, 0);
 }
-
-// ダブルクォーテーションの場合\\を\、\"を"にする。
-// シングルクォーテーションにはエスケープはない
-
