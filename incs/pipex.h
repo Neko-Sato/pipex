@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 20:46:56 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/16 00:40:04 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/16 04:46:46 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PIPEX_H
 
 # include <stddef.h>
+# include <sys/wait.h>
 
 typedef struct s_pipex
 {
@@ -27,10 +28,11 @@ typedef struct s_eval
 {
 	char	**envp;
 	char	**path;
-	int		stdin;
-	int		stdout;
+	int		stdio[2];
 }			t_eval;
 
-// int			pipex(t_pipex *vars, char *executor, char *envp[]);
+void		pipex(t_pipex *vars, char *envp[]);
+char		*executable(char *cmd, char *path[]);
+pid_t		eval(char *cmd, t_eval *config);
 
 #endif

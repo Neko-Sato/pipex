@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/16 00:35:47 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/16 02:07:11 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 
 # include <sys/wait.h>
 
-# define O_WRCT (O_WRONLY | O_CREAT | O_TRUNC)
-# define S_RUWUGO (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
+//	O_WRONLY | O_CREAT | O_TRUNC
+# define O_WRCT 0b1001000001
+//	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
+# define S_RUWUGO 0b110100100
 
 void	setstdio(int input, int output);
 pid_t	execute(char *pathname, char *argv[], char *envp[], int fd[2]);

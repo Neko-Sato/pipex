@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/16 00:36:01 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/16 05:00:07 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ void	setstdio(int input, int output)
 		close(output);
 }
 
-pid_t	execute(char *pathname, char *argv[], char *envp[], int fd[2])
+pid_t	execute(char *pathname, char *argv[], char *envp[], int io[2])
 {
 	pid_t	pid;
 
 	pid = fork();
 	if (!pid)
 	{
-		setstdio(fd[0], fd[1]);
+		setstdio(io[0], io[1]);
 		execve(pathname, argv, envp);
 		exit(EXIT_FAILURE);
 	}
