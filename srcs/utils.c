@@ -6,11 +6,11 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/16 05:00:07 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/20 02:59:31 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
+#include "utils.h"
 #include <libft.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -26,14 +26,17 @@ void	setstdio(int input, int output)
 		close(output);
 }
 
-pid_t	execute(char *pathname, char *argv[], char *envp[], int io[2])
+pid_t	execute(char *pathname, char *argv[], char *envp[], t_execute *var)
 {
 	pid_t	pid;
 
-	pid = fork();
+	if (!var->run_here)
+		pid = fork();
+	else
+		pid = 0;
 	if (!pid)
 	{
-		setstdio(io[0], io[1]);
+		setstdio(var->stdin, var->stdout);
 		execve(pathname, argv, envp);
 		exit(EXIT_FAILURE);
 	}
@@ -54,7 +57,7 @@ char	**get_path(char *envp[])
 	return (ft_split(&envp[i][5], ':'));
 }
 
-void	ft_pipe3(int *reader, int *writer)
+int	ft_pipe3(int *reader, int *writer)
 {
 	int	ret;
 	int	fd[2];
@@ -65,9 +68,5 @@ void	ft_pipe3(int *reader, int *writer)
 		*reader = fd[0];
 		*writer = fd[1];
 	}
-	else
-	{
-		*reader = -1;
-		*writer = -1;
-	}
+	return (ret);
 }

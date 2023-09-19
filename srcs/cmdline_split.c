@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 19:45:33 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/12 22:03:48 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/20 00:09:07 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ static int	core(char ***lst_ptr, t_strgen *strgen, char *s)
 {
 	char	*temp;
 
-	while (*s)
+	while (1)
 	{
 		while (ft_isspace(*s))
 			s++;
+		if (!*s)
+			break ;
 		while (*s && !ft_isspace(*s))
 		{
 			if (*s == '\'')
