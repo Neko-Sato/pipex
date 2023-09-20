@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/20 02:57:18 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/20 23:22:03 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ typedef struct s_execute
 void	setstdio(int input, int output);
 pid_t	execute(char *pathname, char *argv[], char *envp[], t_execute *var);
 char	**get_path(char *envp[]);
+void	ft_excption(char *s, int abort);
 int		ft_pipe3(int *reader, int *writer);
 
 char	**cmdline_split(char *s);

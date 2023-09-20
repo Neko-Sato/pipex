@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/09/16 00:49:51 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/09/20 15:14:13 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRCS			= \
 	$(addprefix $(DIR)/srcs/, \
 		utils.c \
 		cmdline_split.c \
+		eval.c \
 		pipex.c \
 	) \
 
@@ -73,10 +74,10 @@ norm: $(MAIN) $(SRCS) $(INCS_DIR)
 
 .PHONY: $(FT)
 $(FT):
-	@git submodule update --init $@
+	# @git submodule update --init $@
 	@make -C $@ all
 
 .PHONY: $(FT_PRINTF)
 $(FT_PRINTF):
-	@git submodule update --init $@
+	# @git submodule update --init $@
 	@make -C $@

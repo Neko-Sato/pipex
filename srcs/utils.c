@@ -6,12 +6,13 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/20 02:59:31 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/20 23:20:08 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include <libft.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -56,6 +57,15 @@ char	**get_path(char *envp[])
 		return (NULL);
 	return (ft_split(&envp[i][5], ':'));
 }
+
+void	ft_excption(char *s, int abort)
+{
+	if (!abort)
+		return ;
+	perror(s);
+	exit(EXIT_FAILURE);
+}
+
 
 int	ft_pipe3(int *reader, int *writer)
 {

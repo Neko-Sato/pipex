@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 15:07:45 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/20 20:42:38 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/20 22:41:21 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ pid_t	eval(char *cmd, t_eval *config)
 	if (path)
 		ret = execute(path, args, config->envp, &config->execute_var);
 	else
-		ret = -1;
+		ret = 0;
 	head = args;
 	while (*args)
 		free(*args++);
