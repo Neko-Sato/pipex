@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/22 08:32:09 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/22 19:31:21 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ char	**get_path(char *envp[])
 
 char	*nodupfilename(char *filename)
 {
-	char		*newfilename;
-	unsigned	i;
-	char		*i_str;
+	char			*newfilename;
+	unsigned int	i;
+	char			*i_str;
 
 	i = 0;
 	while (1)
@@ -80,14 +80,7 @@ char	*nodupfilename(char *filename)
 		free(newfilename);
 		if (i >= UINT_MAX)
 			return (NULL);
+		i++;
 	}
 	return (newfilename);
-}
-
-void	ft_excption(char *s, int abort)
-{
-	if (!abort)
-		return ;
-	perror(s);
-	exit(EXIT_FAILURE);
 }

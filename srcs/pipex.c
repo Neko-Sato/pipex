@@ -6,11 +6,10 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:02 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/20 23:21:12 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 02:46:54 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "eval.h"
 #include "pipex.h"
 #include "utils.h"
 #include <fcntl.h>
@@ -20,57 +19,89 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-static pid_t	pipex_exec(t_pipex *var, int fd[3], t_eval *config);
-
-//	fd[0] = reader
-//	fd[1] = writer
-//	fd[2] = temp
-void	pipex(t_pipex *var, char *envp[])
+typedef struct s_pipex_local
 {
+	t_pipex	*var;
 	t_eval	config;
 	pid_t	pid;
-	int		fd[3];
+	int		reader;
+	int		writer;
+	int		tempfd;
+	char	*str;
+	size_t	i;
+}			t_pipex_local;
 
-	config.envp = envp;
-	config.path = get_path(envp);
-	if (!config.path)
-		return ;
-	fd[2] = open(var->file2, O_WRCT, S_RUWUGO);
-	if (fd[2] == -1)
-		return (perror(var->file2));
-	pid = pipex_exec(var, fd, &config);
-	if (pid == -1)
-		return (perror("fork"));
-	waitpid(pid, NULL, 0);
-	close(fd[2]);
-	free(config.path);
+static int	init_fd(t_pipex_local *sp);
+static int	section_to_execute(t_pipex_local *sp);
+static int	set_fd(t_pipex_local *sp);
+static int	execute_cmd(t_pipex_local *sp);
+
+void	pipex(t_pipex *var, char *envp[])
+{
+	t_pipex_local	sp;
+
+	sp.var = var;
+	if (sp.var->here_doc)
+		sp.str = here_doc(sp.var->in);
+	sp.config.envp = envp;
+	sp.config.path = get_path(envp);
+	init_fd(&sp);
+	section_to_execute(&sp);
+	close(sp.tempfd);
+	waitpid(sp.pid, NULL, 0);
+	free(sp.config.path);
+	if (sp.var->here_doc)
+		free(sp.str);
 }
 
-static pid_t	pipex_exec(t_pipex *var, int fd[3], t_eval *config)
+static int	init_fd(t_pipex_local *sp)
 {
-	size_t	i;
-	pid_t	pid;
+	if (!sp->var->append)
+		sp->tempfd = open(sp->var->out, O_OVERWRITE, S_RUWUGO);
+	else
+		sp->tempfd = open(sp->var->out, O_APPENDWRITE, S_RUWUGO);
+	return (0);
+}
 
-	i = var->len;
-	pid = fork();
-	if (pid)
-		return (pid);
-	while (1)
+static int	section_to_execute(t_pipex_local *sp)
+{
+	sp->i = sp->var->len;
+	sp->pid = fork();
+	if (sp->pid)
 	{
-		fd[1] = fd[2];
-		if (1 < i)
-			ft_pipe3(&fd[0], &fd[2]);
-		else
-			fd[0] = open(var->file1, O_RDONLY);
-		ft_excption((char *[]){var->file1, "pipe"}[1 < i], fd[0] == -1);
-		if (i < 1)
-			exit(EXIT_SUCCESS);
-		ft_memcpy(&config->execute_var, &(t_execute){.stdin = fd[0],
-			.stdout = fd[1], .run_here = (i <= 1)}, sizeof(t_eval));
-		pid = eval(var->cmds[--i], config);
-		if (pid < 0)
-			perror("eval");
-		if (pid <= 0)
-			exit(EXIT_FAILURE);
+		while (1)
+		{
+			set_fd(sp);
+			execute_cmd(sp);
+		}
 	}
+	return (0);
+}
+
+static int	set_fd(t_pipex_local *sp)
+{
+	sp->writer = sp->tempfd;
+	if (1 < sp->i || sp->var->here_doc)
+		ft_pipe3(&sp->reader, &sp->tempfd);
+	else
+		sp->reader = open(sp->var->in, O_RDONLY);
+	return (0);
+}
+
+static int	execute_cmd(t_pipex_local *sp)
+{
+	if (sp->i <= 0)
+		exit(EXIT_SUCCESS);
+	ft_memcpy(&sp->config.execute_var, &(t_execute){.stdin = sp->reader,
+		.stdout = sp->writer, .run_here = !(1 < sp->i
+			|| sp->var->here_doc)}, sizeof(t_execute));
+	sp->pid = eval(sp->var->cmds[--sp->i], &sp->config);
+	if (!sp->i && sp->var->here_doc)
+	{
+		ft_putstr_fd(sp->str, sp->tempfd);
+		exit(EXIT_SUCCESS);
+	}
+	if (sp->pid <= 0)
+		exit(EXIT_FAILURE);
+	return (0);
 }

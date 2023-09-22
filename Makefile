@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/09/20 15:14:13 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/09/23 01:37:32 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRCS			= \
 	$(addprefix $(DIR)/srcs/, \
 		utils.c \
 		cmdline_split.c \
+		here_doc.c \
 		eval.c \
 		pipex.c \
 	) \

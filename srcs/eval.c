@@ -6,11 +6,11 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 15:07:45 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/20 22:41:21 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/22 18:45:59 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "eval.h"
+#include "utils.h"
 #include <libft.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +42,9 @@ char	*executable(char *cmd, char *path[])
 	return (NULL);
 }
 
+// When -1				: error
+// When 0				: not_found
+// When greater than 0	: success
 pid_t	eval(char *cmd, t_eval *config)
 {
 	pid_t	ret;
