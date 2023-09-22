@@ -6,12 +6,13 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/20 23:20:08 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/22 08:32:09 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
 #include <libft.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
@@ -58,25 +59,35 @@ char	**get_path(char *envp[])
 	return (ft_split(&envp[i][5], ':'));
 }
 
+char	*nodupfilename(char *filename)
+{
+	char		*newfilename;
+	unsigned	i;
+	char		*i_str;
+
+	i = 0;
+	while (1)
+	{
+		i_str = ft_utoa(i);
+		if (!i_str)
+			return (NULL);
+		newfilename = ft_strjoin(filename, i_str);
+		free(i_str);
+		if (!newfilename)
+			return (NULL);
+		if (access(newfilename, F_OK) == -1)
+			break ;
+		free(newfilename);
+		if (i >= UINT_MAX)
+			return (NULL);
+	}
+	return (newfilename);
+}
+
 void	ft_excption(char *s, int abort)
 {
 	if (!abort)
 		return ;
 	perror(s);
 	exit(EXIT_FAILURE);
-}
-
-
-int	ft_pipe3(int *reader, int *writer)
-{
-	int	ret;
-	int	fd[2];
-
-	ret = pipe(fd);
-	if (!ret)
-	{
-		*reader = fd[0];
-		*writer = fd[1];
-	}
-	return (ret);
 }
