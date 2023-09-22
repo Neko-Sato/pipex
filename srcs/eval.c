@@ -6,15 +6,15 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 15:07:45 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 05:26:31 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 05:38:00 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
+#include <errno.h>
 #include <libft.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -40,10 +40,13 @@ char	*executable(char *cmd, char *path[])
 		ft_putstr_fd(cmd, STDERR_FILENO);
 		ft_putendl_fd(": command not found", STDERR_FILENO);
 	}
-	errno = ENOEXEC;
+	errno = 0;
 	return (NULL);
 }
 
+// When -1				: error
+// When 0				: not_found
+// When greater than 0	: success
 pid_t	eval(char *cmd, t_eval *config)
 {
 	pid_t	ret;
@@ -58,7 +61,7 @@ pid_t	eval(char *cmd, t_eval *config)
 	if (path)
 		ret = execute(path, args, config->envp, &config->execute_var);
 	else
-		ret = (-1);
+		ret = -!!errno;
 	head = args;
 	while (*args)
 		free(*args++);

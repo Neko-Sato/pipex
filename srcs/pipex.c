@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:02 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 05:24:29 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 05:41:35 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,9 +119,10 @@ static int	execute_cmd(t_pipex *var, t_pipex_local *sp)
 	sp->config.execute_var.stdout = sp->writer;
 	sp->config.execute_var.run_here = (sp->i <= 1 && !var->here_doc);
 	sp->pid = eval(var->cmds[--sp->i], &sp->config);
-	if (sp->pid < 0)
+	if (sp->pid <= 0)
 	{
-		perror("eval");
+		if (sp->pid)
+			perror("eval");
 		return (1);
 	}
 	if (sp->i < 1 && var->here_doc)
