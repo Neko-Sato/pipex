@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 15:07:45 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/22 18:45:59 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 05:06:24 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <libft.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -39,6 +40,7 @@ char	*executable(char *cmd, char *path[])
 		ft_putstr_fd(cmd, STDERR_FILENO);
 		ft_putendl_fd(": command not found", STDERR_FILENO);
 	}
+	errno = ENOEXEC;
 	return (NULL);
 }
 
@@ -59,7 +61,7 @@ pid_t	eval(char *cmd, t_eval *config)
 	if (path)
 		ret = execute(path, args, config->envp, &config->execute_var);
 	else
-		ret = 0;
+		ret = (-1);
 	head = args;
 	while (*args)
 		free(*args++);

@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/22 19:31:21 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 04:35:13 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,30 +57,4 @@ char	**get_path(char *envp[])
 	if (!envp[i])
 		return (NULL);
 	return (ft_split(&envp[i][5], ':'));
-}
-
-char	*nodupfilename(char *filename)
-{
-	char			*newfilename;
-	unsigned int	i;
-	char			*i_str;
-
-	i = 0;
-	while (1)
-	{
-		i_str = ft_utoa(i);
-		if (!i_str)
-			return (NULL);
-		newfilename = ft_strjoin(filename, i_str);
-		free(i_str);
-		if (!newfilename)
-			return (NULL);
-		if (access(newfilename, F_OK) == -1)
-			break ;
-		free(newfilename);
-		if (i >= UINT_MAX)
-			return (NULL);
-		i++;
-	}
-	return (newfilename);
 }
