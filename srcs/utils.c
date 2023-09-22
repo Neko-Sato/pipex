@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 04:35:13 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 08:15:30 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,8 +39,9 @@ pid_t	execute(char *pathname, char *argv[], char *envp[], t_execute *var)
 	if (!pid)
 	{
 		setstdio(var->stdin, var->stdout);
-		execve(pathname, argv, envp);
-		exit(EXIT_FAILURE);
+		pid = execve(pathname, argv, envp);
+		if (!var->run_here)
+			exit(EXIT_FAILURE);
 	}
 	return (pid);
 }
@@ -57,4 +58,18 @@ char	**get_path(char *envp[])
 	if (!envp[i])
 		return (NULL);
 	return (ft_split(&envp[i][5], ':'));
+}
+
+int	newpipe(int *reader, int *writer)
+{
+	int	ret;
+	int	fd[2];
+
+	ret = pipe(fd);
+	if (!ret)
+	{
+		*reader = fd[0];
+		*writer = fd[1];
+	}
+	return (ret);
 }

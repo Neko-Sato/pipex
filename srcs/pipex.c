@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:02 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 05:41:35 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 08:16:12 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ static int	set_fd(t_pipex *var, t_pipex_local *sp)
 	sp->writer = sp->tempfd;
 	if (1 < sp->i || var->here_doc)
 	{
-		if (ft_pipe3(&sp->reader, &sp->tempfd))
+		if (newpipe(&sp->reader, &sp->tempfd))
 			perror("pipe");
 	}
 	else

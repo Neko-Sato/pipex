@@ -6,42 +6,42 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 15:07:45 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 05:38:00 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/09/23 08:20:18 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "utils.h"
-#include <errno.h>
 #include <libft.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
-char	*executable(char *cmd, char *path[])
+int	executable(char *cmd, char *path[], char **filename)
 {
-	char	*temp;
-
 	if (ft_strchr(cmd, '/'))
 	{
 		if (!access(cmd, X_OK))
-			return (ft_strdup(cmd));
+		{
+			*filename = ft_strdup(cmd);
+			return (-!*filename);
+		}
 		perror(cmd);
 	}
 	else
 	{
 		while (path && *path)
 		{
-			temp = ft_joinpath(*path++, cmd);
-			if (!temp || !access(temp, X_OK))
-				return (temp);
-			free(temp);
+			*filename = ft_joinpath(*path++, cmd);
+			if (!*filename || !access(*filename, X_OK))
+				return (-!*filename);
+			free(*filename);
 		}
 		ft_putstr_fd(cmd, STDERR_FILENO);
 		ft_putendl_fd(": command not found", STDERR_FILENO);
 	}
-	errno = 0;
-	return (NULL);
+	*filename = NULL;
+	return (1);
 }
 
 // When -1				: error
@@ -57,11 +57,11 @@ pid_t	eval(char *cmd, t_eval *config)
 	args = cmdline_split(cmd);
 	if (!args)
 		return (-1);
-	path = executable(args[0], config->path);
-	if (path)
+	ret = executable(args[0], config->path, &path);
+	if (ret == 0)
 		ret = execute(path, args, config->envp, &config->execute_var);
-	else
-		ret = -!!errno;
+	else if (ret == 1)
+		ret = 0;
 	head = args;
 	while (*args)
 		free(*args++);
