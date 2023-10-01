@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 08:15:56 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/02 05:47:50 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,14 @@
 # define UTILS_H
 
 # include <sys/wait.h>
+# include <fcntl.h>
 
-//	O_WRONLY | O_CREAT | O_TRUNC
-# define O_OVERWRITE 0b01001000001
-//	O_WRONLY | O_APPEND
-# define O_APPENDWRITE 0b10000000001
+//	O_WRONLY | O_CREAT | O_TRUNC  
+# define O_OVERWRITE 577
+//	O_WRONLY | O_CREAT | O_APPEND
+# define O_APPENDWRITE 1089
 //	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-# define S_RUWUGO 0b00110100100
+# define S_RUWUGO 420
 
 //	utils.c
 typedef struct s_execute
@@ -38,6 +39,7 @@ int				newpipe(int *reader, int *writer);
 
 char			**cmdline_split(char *s);
 char			*here_doc(char *delimited);
+int				here_doc_fd(char *delimited);
 
 //	eval.c
 typedef struct s_eval

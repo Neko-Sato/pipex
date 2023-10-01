@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/26 20:46:56 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 01:03:55 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/02 05:06:48 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@ typedef struct s_pipex
 	int		append;
 }			t_pipex;
 
-void		pipex(t_pipex *var, char *envp[]);
+int		pipex(t_pipex *var, char *envp[]);
 
 #endif

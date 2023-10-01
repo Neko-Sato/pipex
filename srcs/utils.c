@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/24 15:01:56 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/02 05:49:22 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,35 @@ int	newpipe(int *reader, int *writer)
 	{
 		*reader = fd[0];
 		*writer = fd[1];
+	}
+	else
+	{
+		*reader = -1;
+		*writer = -1;
+	}
+	return (ret);
+}
+
+int	here_doc_fd(char *delimited)
+{
+	int		ret;
+	int		temp;
+	char	*str;
+
+	if (!newpipe(&ret, &temp))
+	{
+		str = here_doc(delimited);
+		if (str)
+		{
+			ft_putstr_fd(str, temp);
+			free(str);
+		}
+		else
+		{
+			close(ret);
+			ret = -1;
+		}
+		close(temp);
 	}
 	return (ret);
 }

@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:02 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 08:16:12 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/02 05:48:10 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,109 +26,110 @@ typedef struct s_pipex_local
 	int		reader;
 	int		writer;
 	int		tempfd;
-	char	*str;
+	int		infile;
+	int		outfile;
 	size_t	i;
 }			t_pipex_local;
 
 static int	init_fd(t_pipex *var, t_pipex_local *sp);
+static int	set_fd(t_pipex *var, t_pipex_local *sp, int is_last);
 static int	section_to_execute(t_pipex *var, t_pipex_local *sp);
-static int	set_fd(t_pipex *var, t_pipex_local *sp);
-static int	execute_cmd(t_pipex *var, t_pipex_local *sp);
+static int	execute_cmd(t_pipex *var, t_pipex_local *sp, size_t i);
 
-void	pipex(t_pipex *var, char *envp[])
+int	pipex(t_pipex *var, char *envp[])
 {
 	t_pipex_local	sp;
 
-	if (var->here_doc)
-	{
-		sp.str = here_doc(var->in);
-		if (!sp.str)
-			return ;
-	}
+	sp.pid = 0;
 	sp.config.envp = envp;
 	sp.config.path = get_path(envp);
-	if (sp.config.path)
+	sp.config.execute_var.run_here = 0;
+	if (init_fd(var, &sp))
 	{
-		if (!init_fd(var, &sp))
-		{
-			if (!section_to_execute(var, &sp))
-				waitpid(sp.pid, NULL, 0);
-			close(sp.tempfd);
-		}
 		free(sp.config.path);
+		return (-1);
 	}
-	if (var->here_doc)
-		free(sp.str);
+	if (section_to_execute(var, &sp))
+	{
+		free(sp.config.path);
+		return (-1);
+	}
+	free(sp.config.path);
+	if (0 < sp.pid)
+		waitpid(sp.pid, NULL, 0);
+	return (0);
 }
 
 static int	init_fd(t_pipex *var, t_pipex_local *sp)
 {
-	if (!var->append)
-		sp->tempfd = open(var->out, O_OVERWRITE, S_RUWUGO);
+	if (var->here_doc)
+	{
+		sp->infile = here_doc_fd(var->in);
+		if (sp->infile < 0)
+		{
+			perror("here_doc");
+			return (-1);
+		}
+	}
 	else
-		sp->tempfd = open(var->out, O_APPENDWRITE, S_RUWUGO);
-	if (sp->tempfd < 0)
+		sp->infile = open(var->in, O_RDONLY);
+	if (sp->infile < 0)
+		perror(var->in);
+	if (var->append)
+		sp->outfile = open(var->out, O_APPENDWRITE, S_RUWUGO);
+	else
+		sp->outfile = open(var->out, O_OVERWRITE, S_RUWUGO);
+	if (sp->outfile < 0)
 		perror(var->out);
-	return (sp->tempfd < 0);
+	return (0);
+}
+
+static int	set_fd(t_pipex *var, t_pipex_local *sp, int is_last)
+{
+	(void)var;
+	if (is_last)
+		sp->writer = sp->outfile;
+	else if (newpipe(&sp->tempfd, &sp->writer))
+	{
+		perror("pipe");
+		return (-1);
+	}
+	return (0);
 }
 
 static int	section_to_execute(t_pipex *var, t_pipex_local *sp)
 {
-	sp->i = var->len;
-	sp->pid = fork();
-	if (sp->pid < 0)
+	size_t	i;
+
+	i = 0;
+	sp->reader = sp->infile;
+	while (i++ < var->len)
 	{
-		perror("fork");
-		return (1);
-	}
-	if (sp->pid)
-	{
-		while (1)
+		if (set_fd(var, sp, i == var->len))
 		{
-			if (set_fd(var, sp))
-				exit(EXIT_FAILURE);
-			if (execute_cmd(var, sp))
-				exit(EXIT_FAILURE);
+			close(sp->reader);
+			return (-1);
 		}
-	}
-	return (0);
-}
-
-static int	set_fd(t_pipex *var, t_pipex_local *sp)
-{
-	sp->writer = sp->tempfd;
-	if (1 < sp->i || var->here_doc)
-	{
-		if (newpipe(&sp->reader, &sp->tempfd))
-			perror("pipe");
-	}
-	else
-	{
-		sp->reader = open(var->in, O_RDONLY);
-		if (sp->reader < 0)
-			perror(var->in);
-	}
-	return (sp->reader < 0);
-}
-
-static int	execute_cmd(t_pipex *var, t_pipex_local *sp)
-{
-	if (sp->i < 1)
-		exit(EXIT_SUCCESS);
-	sp->config.execute_var.stdin = sp->reader;
-	sp->config.execute_var.stdout = sp->writer;
-	sp->config.execute_var.run_here = (sp->i <= 1 && !var->here_doc);
-	sp->pid = eval(var->cmds[--sp->i], &sp->config);
-	if (sp->pid <= 0)
-	{
-		if (sp->pid)
+		if (execute_cmd(var, sp, i - 1))
+		{
 			perror("eval");
-		return (1);
-	}
-	if (sp->i < 1 && var->here_doc)
-	{
-		ft_putstr_fd(sp->str, sp->tempfd);
-		exit(EXIT_SUCCESS);
+			close(sp->tempfd);
+			return (-1);
+		}
+		sp->reader = sp->tempfd;
 	}
 	return (0);
+}
+
+static int	execute_cmd(t_pipex *var, t_pipex_local *sp, size_t i)
+{
+	if (0 < sp->reader && 0 < sp->writer)
+	{
+		sp->config.execute_var.stdin = sp->reader;
+		sp->config.execute_var.stdout = sp->writer;
+		sp->pid = eval(var->cmds[i], &sp->config);
+	}
+	close(sp->reader);
+	close(sp->writer);
+	return (-(sp->pid < 0));
 }
