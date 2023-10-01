@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/10/02 05:47:50 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/02 06:35:16 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,12 @@
 # define UTILS_H
 
 # include <sys/wait.h>
-# include <fcntl.h>
-
-//	O_WRONLY | O_CREAT | O_TRUNC  
-# define O_OVERWRITE 577
-//	O_WRONLY | O_CREAT | O_APPEND
-# define O_APPENDWRITE 1089
-//	S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH
-# define S_RUWUGO 420
 
 //	utils.c
 typedef struct s_execute
 {
-	int			stdin;
-	int			stdout;
+	int			stdin_fd;
+	int			stdout_fd;
 	int			run_here;
 }				t_execute;
 

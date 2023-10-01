@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/07 22:33:06 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/10/02 05:49:22 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/02 06:36:52 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ pid_t	execute(char *pathname, char *argv[], char *envp[], t_execute *var)
 		pid = 0;
 	if (!pid)
 	{
-		setstdio(var->stdin, var->stdout);
+		setstdio(var->stdin_fd, var->stdout_fd);
 		pid = execve(pathname, argv, envp);
 		if (!var->run_here)
 			exit(EXIT_FAILURE);

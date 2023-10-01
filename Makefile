@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/09/26 15:02:39 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/10/02 01:55:20 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -60,7 +60,7 @@ re: fclean all
 
 .PHONY: test
 test: test.c $(OBJS)
-	$(CC) -g $(CFLAGS) $(LDFLAGS) $(IDFLAGS) $^ -o $@ $(LIBS)
+	$(CC) -g $(LDFLAGS) $(IDFLAGS) $^ -o $@ $(LIBS)
 
 .PHONY: norm
 norm: $(MAIN) $(SRCS) $(INCS_DIR)

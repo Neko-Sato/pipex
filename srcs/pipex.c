@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:02 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/10/02 05:48:10 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/02 06:44:03 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <libft.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
@@ -43,6 +44,8 @@ int	pipex(t_pipex *var, char *envp[])
 	sp.pid = 0;
 	sp.config.envp = envp;
 	sp.config.path = get_path(envp);
+	if (!sp.config.path)
+		return (-1);
 	sp.config.execute_var.run_here = 0;
 	if (init_fd(var, &sp))
 	{
@@ -66,19 +69,18 @@ static int	init_fd(t_pipex *var, t_pipex_local *sp)
 	{
 		sp->infile = here_doc_fd(var->in);
 		if (sp->infile < 0)
-		{
-			perror("here_doc");
 			return (-1);
-		}
 	}
 	else
 		sp->infile = open(var->in, O_RDONLY);
 	if (sp->infile < 0)
 		perror(var->in);
 	if (var->append)
-		sp->outfile = open(var->out, O_APPENDWRITE, S_RUWUGO);
+		sp->outfile = open(var->out, O_WRONLY | O_CREAT | O_APPEND,
+				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	else
-		sp->outfile = open(var->out, O_OVERWRITE, S_RUWUGO);
+		sp->outfile = open(var->out, O_WRONLY | O_CREAT | O_TRUNC,
+				S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	if (sp->outfile < 0)
 		perror(var->out);
 	return (0);
@@ -125,8 +127,8 @@ static int	execute_cmd(t_pipex *var, t_pipex_local *sp, size_t i)
 {
 	if (0 < sp->reader && 0 < sp->writer)
 	{
-		sp->config.execute_var.stdin = sp->reader;
-		sp->config.execute_var.stdout = sp->writer;
+		sp->config.execute_var.stdin_fd = sp->reader;
+		sp->config.execute_var.stdout_fd = sp->writer;
 		sp->pid = eval(var->cmds[i], &sp->config);
 	}
 	close(sp->reader);
