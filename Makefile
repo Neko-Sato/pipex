@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/10/02 01:55:20 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/10/07 16:38:08 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -64,6 +64,7 @@ test: test.c $(OBJS)
 
 .PHONY: norm
 norm: $(MAIN) $(SRCS) $(INCS_DIR)
+	@make -C $(FT) norm
 	@norminette $^
 
 .PHONY: $(FT)

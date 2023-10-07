@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:02 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/10/02 06:44:03 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/07 16:34:03 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ int	pipex(t_pipex *var, char *envp[])
 	sp.pid = 0;
 	sp.config.envp = envp;
 	sp.config.path = get_path(envp);
-	if (!sp.config.path)
-		return (-1);
 	sp.config.execute_var.run_here = 0;
 	if (init_fd(var, &sp))
 	{

@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 19:45:33 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/20 20:36:05 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/07 17:52:11 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ char	**cmdline_split(char *s)
 	else
 		ret = ft_xlst2array(lst, sizeof(char *), NULL);
 	ft_xlstclear(&lst, sizeof(char *));
+	ft_strgendel(strgen);
 	return (ret);
 }
 
@@ -46,10 +47,10 @@ static int	core(char ***lst_ptr, t_strgen *strgen, char *s)
 			break ;
 		while (*s && !ft_isspace(*s))
 		{
-			if (*s == '\'')
-				singlequote_mode(strgen, &s);
-			else if (*s == '"')
-				doublequote_mode(strgen, &s);
+			if (*s == '\'' && singlequote_mode(strgen, &s))
+				return (-2);
+			else if (*s == '"' && doublequote_mode(strgen, &s))
+				return (-2);
 			else
 				ft_strgenchr(strgen, *s++);
 		}
