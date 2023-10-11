@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 19:45:33 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/10/07 17:52:11 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/11 20:51:08 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,10 +47,12 @@ static int	core(char ***lst_ptr, t_strgen *strgen, char *s)
 			break ;
 		while (*s && !ft_isspace(*s))
 		{
-			if (*s == '\'' && singlequote_mode(strgen, &s))
-				return (-2);
-			else if (*s == '"' && doublequote_mode(strgen, &s))
-				return (-2);
+			if (*s == '\'')
+				if (singlequote_mode(strgen, &s))
+					return (-2);
+			else if (*s == '"')
+				if (doublequote_mode(strgen, &s))
+					return (-2);
 			else
 				ft_strgenchr(strgen, *s++);
 		}
