@@ -6,13 +6,14 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/12 19:45:33 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/10/11 20:51:08 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/11 21:06:31 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <libft.h>
 
 static int	core(char ***lst_ptr, t_strgen *strgen, char *s);
+static int	loop(t_strgen *strgen, char **s);
 static int	singlequote_mode(t_strgen *strgen, char **s);
 static int	doublequote_mode(t_strgen *strgen, char **s);
 
@@ -45,23 +46,34 @@ static int	core(char ***lst_ptr, t_strgen *strgen, char *s)
 			s++;
 		if (!*s)
 			break ;
-		while (*s && !ft_isspace(*s))
-		{
-			if (*s == '\'')
-				if (singlequote_mode(strgen, &s))
-					return (-2);
-			else if (*s == '"')
-				if (doublequote_mode(strgen, &s))
-					return (-2);
-			else
-				ft_strgenchr(strgen, *s++);
-		}
+		if (loop(strgen, &s))
+			return (-2);
 		temp = ft_strgencomp(strgen);
 		if (!temp || ft_xlstappend(lst_ptr, sizeof(char *), &temp))
 			return (-1);
 	}
 	temp = NULL;
 	return (ft_xlstappend(lst_ptr, sizeof(char *), &temp));
+}
+
+static int	loop(t_strgen *strgen, char **s)
+{
+	while (**s && !ft_isspace(**s))
+	{
+		if (**s == '\'')
+		{
+			if (singlequote_mode(strgen, s))
+				return (-1);
+		}
+		else if (**s == '"')
+		{
+			if (doublequote_mode(strgen, s))
+				return (-1);
+		}
+		else
+			ft_strgenchr(strgen, *(*s)++);
+	}
+	return (0);
 }
 
 static int	singlequote_mode(t_strgen *strgen, char **s)
