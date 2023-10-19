@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/08/22 18:18:02 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/10/07 16:34:03 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/19 19:44:20 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	pipex(t_pipex *var, char *envp[])
 		free(sp.config.path);
 		return (-1);
 	}
-	free(sp.config.path);
+	ft_2darraydel(sp.config.path);
 	if (0 < sp.pid)
 		waitpid(sp.pid, NULL, 0);
 	return (0);

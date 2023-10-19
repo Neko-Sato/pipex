@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/10/12 13:37:53 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/10/19 19:42:14 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -59,8 +59,8 @@ fclean: clean
 re: fclean all
 
 .PHONY: test
-test: test.c $(OBJS)
-	$(CC) -g $(LDFLAGS) $(IDFLAGS) $^ -o $@ $(LIBS)
+test: main.c $(OBJS)
+	$(CC) -g -fsanitize=address $(LDFLAGS) $(IDFLAGS) $^ -o $@ $(LIBS)
 
 .PHONY: norm
 norm: $(MAIN) $(SRCS) $(INCS_DIR)
