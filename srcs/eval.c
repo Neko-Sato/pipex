@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 15:07:45 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/23 08:20:18 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/10/19 21:43:27 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 
 int	executable(char *cmd, char *path[], char **filename)
 {
-	if (ft_strchr(cmd, '/'))
+	if (cmd && ft_strchr(cmd, '/'))
 	{
 		if (!access(cmd, X_OK))
 		{
@@ -30,14 +30,15 @@ int	executable(char *cmd, char *path[], char **filename)
 	}
 	else
 	{
-		while (path && *path)
+		while (cmd && path && *path)
 		{
 			*filename = ft_joinpath(*path++, cmd);
 			if (!*filename || !access(*filename, X_OK))
 				return (-!*filename);
 			free(*filename);
 		}
-		ft_putstr_fd(cmd, STDERR_FILENO);
+		if (cmd)
+			ft_putstr_fd(cmd, STDERR_FILENO);
 		ft_putendl_fd(": command not found", STDERR_FILENO);
 	}
 	*filename = NULL;
