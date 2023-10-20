@@ -6,7 +6,7 @@
 #    By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/20 00:51:30 by hshimizu          #+#    #+#              #
-#    Updated: 2023/10/19 21:44:33 by hshimizu         ###   ########.fr        #
+#    Updated: 2023/10/21 08:21:15 by hshimizu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -70,4 +70,4 @@ norm: $(MAIN) $(SRCS) $(INCS_DIR)
 .PHONY: $(FT)
 $(FT):
 	@git submodule update --init $@
-	@make -C $@
+	@$(MAKE) -C $@
