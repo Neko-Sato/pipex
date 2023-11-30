@@ -6,7 +6,7 @@
 /*   By: hshimizu <hshimizu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/09/20 23:56:23 by hshimizu          #+#    #+#             */
-/*   Updated: 2023/09/24 15:02:04 by hshimizu         ###   ########.fr       */
+/*   Updated: 2023/11/30 15:40:07 by hshimizu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 
 static char	*loop(t_bufferio *stdin, char *delimited);
 static char	*here_doc_read(t_bufferio *stdin, char *delimited, size_t *line);
-static int	chaek_delimited(t_strgen *strgen, char *str, char *delimited);
+static int	chaek_delimited(t_strgen *strgen, char *str, char *delimited,
+				size_t delimited_len);
 static void	put_error(size_t line, char *delimited);
 
 char	*here_doc(char *delimited)
@@ -43,7 +44,9 @@ static char	*loop(t_bufferio *stdin, char *delimited)
 	t_strgen	*strgen;
 	char		*temp;
 	size_t		line;
+	size_t		delimited_len;
 
+	delimited_len = ft_strlen(delimited);
 	strgen = ft_strgennew();
 	if (!strgen)
 		return (NULL);
@@ -53,7 +56,7 @@ static char	*loop(t_bufferio *stdin, char *delimited)
 		temp = here_doc_read(stdin, delimited, &line);
 		if (!temp)
 			break ;
-		if (chaek_delimited(strgen, temp, delimited))
+		if (chaek_delimited(strgen, temp, delimited, delimited_len))
 		{
 			temp = ft_strgencomp(strgen);
 			break ;
@@ -75,9 +78,11 @@ static char	*here_doc_read(t_bufferio *stdin, char *delimited, size_t *line)
 	return (temp);
 }
 
-static int	chaek_delimited(t_strgen *strgen, char *str, char *delimited)
+static int	chaek_delimited(t_strgen *strgen, char *str, char *delimited,
+		size_t delimited_len)
 {
-	if (ft_strcmp(str, delimited) == '\n')
+	if (!ft_strncmp(str, delimited, delimited_len)
+		&& str[delimited_len] == '\n')
 	{
 		free(str);
 		return (1);
